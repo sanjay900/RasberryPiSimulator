@@ -53,6 +53,7 @@
 *.jar
 *.war
 *.ear
+/RasberryPi Home/ENGR101Team1
 #ignore the rpi image and zip, thats downloaded on first run
 *.img
 *.zip
