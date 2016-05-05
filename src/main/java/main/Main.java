@@ -48,15 +48,15 @@ public class Main {
                                     dOut.writeByte(127);
                                     break;
                                 case op_set_motor:
-                                    setMotor(dIn.readByte(),dIn.readByte());
+                                    setMotor(dIn.readByte(),dIn.readInt());
                                     break;
                                 //For this, there is no point in simulating leds.
                                 case op_write_digital:
                                     break;
                                 case op_get_pixel:
                                     arena.camera.copyVisionImage(bim);
-                                    int col = dIn.readInt();
                                     int row = dIn.readInt();
+                                    int col = dIn.readInt();
                                     Color c = new Color(bim.getRGB(row,col));
                                     switch (dIn.readByte()) {
                                         case 0:
@@ -87,7 +87,7 @@ public class Main {
 
     }
     private static void setMotor(int motor, int value) {
-        arena.robot.setWheelVelocity(motor,value/127);
+        arena.robot.setWheelVelocity(motor,value/127d);
     }
     static final int op_init = 1;
     static final int op_take_picture = 2;

@@ -78,8 +78,8 @@ int write_digital(int chan, char level) {
 }
 
 int set_motor(int motor, int speed) {
-    char data[] = {op_set_motor,motor,speed};
-    sendData(data,3);
+    char data[] = {op_set_motor,motor,itoc(speed)[0],itoc(speed)[1],itoc(speed)[2],itoc(speed)[3]};
+    sendData(data,6);
 }
 int read_analog(int chan) {
     char data[] = {op_read_analog,chan};

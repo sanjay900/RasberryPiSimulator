@@ -47,7 +47,7 @@ public class MyArena extends Demo {
 
             camera.setUpdatePerSecond(60);
             Vector3d pos = new Vector3d(0.0, (agentHeight / 2)
-                    + (cameraBodyRadius * 3) / 4, 0);
+                    + (cameraBodyRadius * 3) / 4+5, 0);
             addSensorDevice(camera, pos, 0);
             RangeSensorBelt b = new RangeSensorBelt(0.5f,0f,100f,4,RangeSensorBelt.TYPE_SONAR,0);
 
@@ -92,13 +92,7 @@ public class MyArena extends Demo {
         add(w);
         w = new Wall(new Vector3d(0, 0, -10), 20, 1, this);
         add(w);
-        w = new Wall(new Vector3d(0, 0, 0), 20, 0.01f, this);
-        w.rotate90(1);
-        w.collides = false;
-        add(w);
-        w = new Wall(new Vector3d(0, 0, 0), 20, 0.01f, this);
-        w.collides = false;
-        add(w);
+
 
         w = new Wall(new Vector3d(0, 0, -5), 15, 0.01f, this);
         w.collides = false;
