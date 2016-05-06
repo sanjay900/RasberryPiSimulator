@@ -36,6 +36,12 @@
 # Compiled Object files
 *.slo
 # Precompiled Headers
+/RasberryPi Home/ENGR101Team1/input.cpp
+/RasberryPi Home/ENGR101Team1/makefile
+/RasberryPi Home/ENGR101Team1/.idea
+/RasberryPi Home/ENGR101Team1/README.md
+/RasberryPi Home/ENGR101Team1/CMakeLists.txt
+/RasberryPi Home/ENGR101Team1/output
 # Compiled Dynamic libraries
 # Fortran module files
 *.mod
