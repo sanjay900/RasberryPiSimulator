@@ -39,19 +39,20 @@ public class MyArena extends Demo {
     public class Robot extends Agent {
         public Robot (Vector3d position, String name) {
             super(position,name);
-            this.radius = 0.5f;
+            this.radius = 0.1f;
+            this.height = 0.1f;
             // Add sensors
             double agentHeight = getHeight();
-            float cameraBodyRadius = 0.1f;
+            float cameraBodyRadius = 0.3f;
             camera = new CameraSensor(cameraBodyRadius, 320, 240);
 
             camera.setUpdatePerSecond(60);
             Vector3d pos = new Vector3d(0.0, (agentHeight / 2)
-                    + (cameraBodyRadius * 3) / 4+5, 0);
+                    + (cameraBodyRadius * 3) / 4, 0);
             addSensorDevice(camera, pos, 0);
-            RangeSensorBelt b = new RangeSensorBelt(0.5f,0f,100f,4,RangeSensorBelt.TYPE_SONAR,0);
+            RangeSensorBelt b = new RangeSensorBelt(0.1f,0f,10f,3,RangeSensorBelt.TYPE_IR,0);
 
-            addSensorDevice(b,pos,0);
+            addSensorDevice(b,new Vector3d(pos.getX(),0,pos.getZ()),Math.PI);
             setKinematicModel(new DifferentialKinematic(getRadius()));
         }
 
@@ -62,6 +63,9 @@ public class MyArena extends Demo {
 
         /** Perform one step of Agent's Behavior */
         public void performBehavior() {
+            //Uncomment when testing to make the robot move without a connected pi
+            //robot.setWheelVelocity(1,1);
+            //robot.setWheelVelocity(2,1);
         }
         /**
          * Gets a wheels velocity.
@@ -77,32 +81,36 @@ public class MyArena extends Demo {
         }
 
     }
+    float size = 2;
+    float width = 0.1f;
+    float pathWidth = 0.01f;
     public MyArena() {
+        worldSize = 4;
         this.floorColor = new Color3f(Color.BLACK);
         this.wallColor = new Color3f(Color.WHITE);
         light1IsOn = true;
         light2IsOn = false;
-        Wall w = new Wall(new Vector3d(10, 0, 0), 20, 1, this);
+        Wall w = new Wall(new Vector3d(size, 0, 0), size*2, 1,width, this);
         w.rotate90(1);
         add(w);
-        w = new Wall(new Vector3d(-10, 0, 0), 20, 1, this);
+        w = new Wall(new Vector3d(-size, 0, 0), size*2, 1,width, this);
         w.rotate90(1);
         add(w);
-        w = new Wall(new Vector3d(0, 0, 10), 20, 1, this);
+        w = new Wall(new Vector3d(0, 0, size), size*2, 1,width, this);
         add(w);
-        w = new Wall(new Vector3d(0, 0, -10), 20, 1, this);
+        w = new Wall(new Vector3d(0, 0, -size), size*2, 1,width, this);
         add(w);
 
 
-        w = new Wall(new Vector3d(0, 0, -5), 15, 0.01f, this);
+        w = new Wall(new Vector3d(-0.5, 0, -1), 3.1f, 0.01f,pathWidth, this);
         w.collides = false;
         add(w);
 
-        w = new Wall(new Vector3d(7, 0, -4), 2, 0.01f, this);
-        w.rotateY(1.3);
+        w = new Wall(new Vector3d(1, 0, -0.76), 0.5f, 0.01f,pathWidth, this);
+        w.rotateY(-1.8);
         w.collides = false;
         add(w);
-        robot = new Robot(new Vector3d(-5, 0, -5), "robot 1");
+        robot = new Robot(new Vector3d(-1, 0.1, -1), "robot 1");
         add(robot);
         hasAxis = false;
 

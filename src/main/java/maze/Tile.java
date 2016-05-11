@@ -1,4 +1,4 @@
-package tracker;
+package maze;
 
 import main.Main;
 import simbad.sim.Wall;
@@ -50,10 +50,10 @@ public class Tile {
     public boolean equals(Object other) {
         return other instanceof Tile && ((Tile) other).x == x && ((Tile) other).y == y;
     }
-    final int size = 10/Maze.width;
+    final float size = 2f/Maze.width;
     public void draw() {
-        int x = this.x*size;
-        int y = this.y*size;
+        float x = this.x*size;
+        float y = this.y*size;
         Wall w;
         for (Direction dir : closed) {
             if (dir.x == -1 && dir.y == 0) {
@@ -66,7 +66,7 @@ public class Tile {
                 w = new Wall(new Vector3d(y+size,0,x+0.3f*size+0.3f*size),0.3f*size,1,size+0.3f*size,Main.arena);
             }
             //Shift quadrant
-            w.translateTo(new Vector3d(-10,0,0));
+            w.translateTo(new Vector3d(-2,0,0));
             Main.arena.add(w);
         }
 

@@ -150,7 +150,7 @@ public class Eye extends SensorDevice {
     void create3D(float radius) {
         super.create3D(true);
         // body
-        if (radius > 0) {
+        /*if (radius > 0) {
             Color3f color = new Color3f(0.8f, 0.8f, 0.0f);
             Appearance appear = new Appearance();
             appear
@@ -160,7 +160,7 @@ public class Eye extends SensorDevice {
             node.setCollidable(false);
             node.setPickable(false);
             addChild(node);
-        }
+        }*/
     }
     void createViewPlatform(){
         // viewplatform

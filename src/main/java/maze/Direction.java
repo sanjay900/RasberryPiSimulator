@@ -1,4 +1,4 @@
-package tracker;
+package maze;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,8 +1,7 @@
 package main;
 
-import simbad.gui.Console;
 import simbad.gui.Simbad;
-import tracker.Maze;
+import maze.Maze;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

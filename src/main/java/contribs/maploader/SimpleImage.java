@@ -250,7 +250,7 @@ class SimpleImage extends Frame {
 		*/
 		
 		
-		// Maze Display example
+		// maze Display example
 		boolean display = false;
 		SimpleImage simpleimage = new SimpleImage("ressources/map1.png", display);
 		simpleimage.displayInformation();
