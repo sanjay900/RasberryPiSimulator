@@ -50,23 +50,23 @@ public class Tile {
     public boolean equals(Object other) {
         return other instanceof Tile && ((Tile) other).x == x && ((Tile) other).y == y;
     }
-    final float size = 2f/Maze.width;
+    final float size = 1f/Maze.width;
     public void draw() {
         float x = this.x*size;
         float y = this.y*size;
         Wall w;
         for (Direction dir : closed) {
             if (dir.x == -1 && dir.y == 0) {
-                w = new Wall(new Vector3d(y+0.3f*size,0,x),size,1,0.3f*size,Main.arena);
+                w = new Wall(new Vector3d(y+0.3f*size,0,x),size,0.5f,0.3f*size,Main.arena);
             } else if (dir.x == 1 && dir.y == 0) {
-                w = new Wall(new Vector3d(y+0.3f*size,0,x+size),size,1,0.3f*size,Main.arena);
+                w = new Wall(new Vector3d(y+0.3f*size,0,x+size),size,0.5f,0.3f*size,Main.arena);
             } else if (dir.x == 0 && dir.y == -1) {
-                w = new Wall(new Vector3d(y,0,x+0.3f*size),0.3f*size,1,size,Main.arena);
+                w = new Wall(new Vector3d(y,0,x+0.3f*size),0.3f*size,0.5f,size,Main.arena);
             } else {
-                w = new Wall(new Vector3d(y+size,0,x+0.3f*size+0.3f*size),0.3f*size,1,size+0.3f*size,Main.arena);
+                w = new Wall(new Vector3d(y+size,0,x+0.3f*size+0.3f*size),0.3f*size,0.5f,size+0.3f*size,Main.arena);
             }
             //Shift quadrant
-            w.translateTo(new Vector3d(-2,0,0));
+            w.translateTo(new Vector3d(-1,0,0));
             Main.arena.add(w);
         }
 
