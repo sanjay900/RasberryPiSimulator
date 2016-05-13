@@ -9,7 +9,7 @@
 
     <repositories>
         <repository>
-            <url>https://maven.tangentmc.net/repository/victoria/</url>
+            <url>https://socketio.tangentmc.net:8081/repository/victoria/</url>
             <id>tangentmc</id>
         </repository>
     </repositories>
