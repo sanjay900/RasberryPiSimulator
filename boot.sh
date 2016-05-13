@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo apt-get install qemu qemu-user-static binfmt-support
 if [ ! -d "rpi_image" ]; then
     mkdir rpi_image
     cd rpi_image
@@ -10,6 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 mkdir rpi_mnt
 sudo mount "${DIR}/rpi_image/2016-03-18-raspbian-jessie.img" -o loop,offset=$((131072*512)),rw rpi_mnt
 cd rpi_mnt
+sudo \cp ../ld.so.preload etc/ld.so.preload
+sudo \cp /usr/bin/qemu-arm-static usr/bin
 sudo cp "../RasberryPi Home/.bashrc" bashrc.sh
 sudo mkdir home/pi/code
 sudo mount --bind "${DIR}/RasberryPi Home" "${DIR}/rpi_mnt/home/pi/code"
