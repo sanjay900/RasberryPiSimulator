@@ -22,7 +22,7 @@ public class Tile {
         this.y = y;
     }
     public Tile randomWall() {
-        List<Direction> tiles = Direction.values().stream().filter(c -> this.getRelative(c).inBounds()).collect(Collectors.toList());
+        List<Direction> tiles = closed.stream().filter(c -> this.getRelative(c).inBounds()).collect(Collectors.toList());
         if (tiles.isEmpty()) return null;
         Direction d = tiles.get(r.nextInt(tiles.size()));
         Tile t = getRelative(d);

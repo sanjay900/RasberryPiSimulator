@@ -21,16 +21,22 @@ public class Maze {
         t.closed.remove(Direction.NORTH);
         stack.push(t);
         tiles.add(t);
+        Tile random;
+        //We push each tile on, but as we go, the current tile will slowly branch out but then track backwards
+        //The stack is empty once we reach the last tile
         while (!stack.isEmpty()) {
             t = stack.peek();
-            while (t.randomWall() == null) {
+            //If randomwall returns null, pop a new tile from the stack, this will backtrack to the last tile
+            //And then check all its directions until we find a tile with free directions
+            //If the stack is empty we have backtracked to the start.
+            while ((random = t.randomWall()) == null) {
                 if (stack.isEmpty()) break;
                 stack.pop();
                 if (stack.isEmpty()) break;
                 t = stack.peek();
             }
             if (stack.isEmpty()) break;
-            t = t.randomWall();
+            t = random;
             tiles.add(t);
             stack.push(t);
         }
