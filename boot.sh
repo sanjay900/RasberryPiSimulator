@@ -15,17 +15,19 @@ sudo \cp ../ld.so.preload etc/ld.so.preload
 sudo \cp /usr/bin/qemu-arm-static usr/bin
 sudo cp "../RasberryPi Home/.bashrc" bashrc.sh
 sudo mkdir home/pi/code
-sudo mount --bind "${DIR}/RasberryPi Home" "${DIR}/rpi_mnt/home/pi/code"
+sudo mount --bind "$s{DIR}/RasberryPi Home" "${DIR}/rpi_mnt/home/pi/code"
 sudo mount --bind /dev dev/
 sudo mount --bind /sys sys/
 sudo mount --bind /proc proc/
 sudo mount --bind /dev/pts dev/pts
 sudo chroot . bin/bash -c /bashrc.sh
+if [ -d "dev/pts" ]; then
 sudo umount -l dev/pts
 sudo umount -l home/pi/code
 sudo umount -l dev
 sudo umount -l sys
 sudo umount -l proc
+fi
 cd ..
 sleep 1
 sudo umount rpi_mnt
