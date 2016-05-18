@@ -95,7 +95,8 @@ char get_pixel(int row, int col, int color) {
     read(sock, b, 1);
     return b[0];
 }
-
+void take_picture() {
+}
 void sendData(char* data, int size)
 {
     int n;
