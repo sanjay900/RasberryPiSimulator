@@ -15,7 +15,7 @@ sudo \cp ../ld.so.preload etc/ld.so.preload
 sudo \cp /usr/bin/qemu-arm-static usr/bin
 sudo cp "../RasberryPi Home/.bashrc" bashrc.sh
 sudo mkdir home/pi/code
-sudo mount --bind "$s{DIR}/RasberryPi Home" "${DIR}/rpi_mnt/home/pi/code"
+sudo mount --bind "${DIR}/RasberryPi Home" "${DIR}/rpi_mnt/home/pi/code"
 sudo mount --bind /dev dev/
 sudo mount --bind /sys sys/
 sudo mount --bind /proc proc/

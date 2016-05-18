@@ -47,7 +47,7 @@ public class MyArena extends Demo {
             camera = new CameraSensor(cameraBodyRadius, 320, 240);
 
             camera.setUpdatePerSecond(60);
-            Vector3d pos = new Vector3d(0.0, (agentHeight / 2)
+            Vector3d pos = new Vector3d(0.0, 0.1+(agentHeight / 2)
                     + (cameraBodyRadius * 3) / 4, 0);
             addSensorDevice(camera, pos, 0);
             RangeSensorBelt b = new RangeSensorBelt(0.1f,0f,10f,4,RangeSensorBelt.TYPE_IR,0);
@@ -83,7 +83,7 @@ public class MyArena extends Demo {
     }
     float size = 1;
     float width = 0.1f;
-    float pathWidth = 0.01f;
+    float pathWidth = 0.05f;
     public MyArena() {
         worldSize = 2;
         this.floorColor = new Color3f(Color.BLACK);
@@ -102,9 +102,10 @@ public class MyArena extends Demo {
         add(w);
 
 
-        //w = new Wall(new Vector3d(-0.5, 0, -1), 3.1f, 0.01f,pathWidth, this);
-        //w.collides = false;
-        //add(w);
+        w = new Wall(new Vector3d(-size, 0, -size), 3.1f, 0.01f,pathWidth, this);
+        w.rotateY(1);
+        w.collides = false;
+        add(w);
 
         //w = new Wall(new Vector3d(1, 0, -0.76), 0.5f, 0.01f,pathWidth, this);
         //w.rotateY(-1.8);
@@ -432,7 +433,7 @@ public class MyArena extends Demo {
 
         //SANJAY
 
-        robot = new Robot(new Vector3d(-0.5, 0.1, -0.5), "robot 1");
+        robot = new Robot(new Vector3d(-0.5, 0, -0.5), "robot 1");
         add(robot);
         hasAxis = false;
 

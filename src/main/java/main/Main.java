@@ -57,6 +57,7 @@ public class Main {
                                     int row = dIn.readInt();
                                     int col = dIn.readInt();
                                     Color c = new Color(bim.getRGB(row,col));
+                                    System.out.println((c.getRed()+c.getGreen()+c.getBlue())/3);
                                     switch (dIn.readByte()) {
                                         case 0:
                                             dOut.writeByte(c.getRed());
@@ -86,7 +87,7 @@ public class Main {
 
     }
     private static void setMotor(int motor, int value) {
-        arena.robot.setWheelVelocity(motor,value/127d);
+        arena.robot.setWheelVelocity(motor,value/255d);
     }
     static final int op_init = 1;
     static final int op_take_picture = 2;
