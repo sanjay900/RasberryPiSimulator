@@ -84,14 +84,17 @@ int set_motor(int motor, int speed) {
 int read_analog(int chan) {
     char data[] = {op_read_analog,chan};
     sendData(data,2);
-    char* b = malloc(sizeof(char) * 1);
-    read(sock, b, 1);
-    return b[0];
+    char* received_int = malloc(4);
+    char return_status = read(sock, received_int, 4);
+    printf("TES:L %d%d%d%d\n",received_int[0],received_int[1],received_int[2],received_int[3]);
+    if (return_status > 0)
+       return ctoi(received_int);
+    return 0;
 }
 char get_pixel(int row, int col, int color) {
 	char data[] = {op_get_pixel,itoc(row)[0],itoc(row)[1],itoc(row)[2],itoc(row)[3],itoc(col)[0],itoc(col)[1],itoc(col)[2],itoc(col)[3],color};
     sendData(data,10);
-    char* b = malloc(sizeof(char) * 1);
+    char* b = malloc(1);
     read(sock, b, 1);
     return b[0];
 }
@@ -110,4 +113,8 @@ char* itoc(int n) {
 	bytes[2] = (n >> 8) & 0xFF;
 	bytes[3] = n & 0xFF;
 	return bytes;
+}
+int ctoi(int bytes[4]) {
+    int i = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
+	return i;
 }

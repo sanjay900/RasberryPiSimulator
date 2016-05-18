@@ -62,7 +62,7 @@ public class Console extends JInternalFrame implements Runnable {
         } catch (IOException e) {
             System.err.println(" IO Exception");
         }
-        System.setOut(new PrintStream(out));
+        //System.setOut(new PrintStream(out));
         jtextArea = new JTextArea(30, 30);
         jtextArea.setEditable(false);
         jtextArea.setAutoscrolls(true);

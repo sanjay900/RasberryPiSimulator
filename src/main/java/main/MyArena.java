@@ -47,12 +47,12 @@ public class MyArena extends Demo {
             camera = new CameraSensor(cameraBodyRadius, 320, 240);
 
             camera.setUpdatePerSecond(60);
-            Vector3d pos = new Vector3d(0.0, 0.1+(agentHeight / 2)
-                    + (cameraBodyRadius * 3) / 4, 0);
+            Vector3d pos = new Vector3d(0.08, 0.1+(agentHeight / 2)
+                    + (cameraBodyRadius * 3) / 4+0.2, 0);
             addSensorDevice(camera, pos, 0);
-            RangeSensorBelt b = new RangeSensorBelt(0.1f,0f,10f,4,RangeSensorBelt.TYPE_IR,0);
+            b = new RangeSensorBelt(0.1f,0f,10f,4,RangeSensorBelt.TYPE_IR,0);
 
-            addSensorDevice(b,new Vector3d(pos.getX(),0,pos.getZ()),Math.PI);
+            //addSensorDevice(b,new Vector3d(0,0,0),Math.PI);
             setKinematicModel(new DifferentialKinematic(getRadius()));
         }
 
@@ -83,7 +83,8 @@ public class MyArena extends Demo {
     }
     float size = 1;
     float width = 0.1f;
-    float pathWidth = 0.05f;
+    //Standard witth of masking tape appearently
+    float pathWidth = 0.01905f;
     public MyArena() {
         worldSize = 2;
         this.floorColor = new Color3f(Color.BLACK);

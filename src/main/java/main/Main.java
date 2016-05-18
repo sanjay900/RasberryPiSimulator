@@ -26,7 +26,6 @@ public class Main {
         System.setProperty("j3d.implicitAntialiasing", "true");
 
         new Maze(5,5);
-        //Scale everything correctly, its currently 10x10 instead of 2x2
         new Simbad(arena ,false);
         while (true) {
             Socket socket = serversocket.accept();
@@ -44,7 +43,9 @@ public class Main {
                                     System.out.println("Connection established from pi");
                                     break;
                                 case op_read_analog:
-                                    dOut.writeByte(127);
+                                    byte sensor = dIn.readByte();
+                                    dOut.writeInt((int)arena.b.getMeasurement(sensor));
+                                    dOut.flush();
                                     break;
                                 case op_set_motor:
                                     setMotor(dIn.readByte(),dIn.readInt());
@@ -57,7 +58,6 @@ public class Main {
                                     int row = dIn.readInt();
                                     int col = dIn.readInt();
                                     Color c = new Color(bim.getRGB(row,col));
-                                    System.out.println((c.getRed()+c.getGreen()+c.getBlue())/3);
                                     switch (dIn.readByte()) {
                                         case 0:
                                             dOut.writeByte(c.getRed());
@@ -72,6 +72,7 @@ public class Main {
                                             dOut.writeByte((c.getRed()+c.getGreen()+c.getBlue())/3);
                                             break;
                                     }
+                                    dOut.flush();
                             }
                         }
 
@@ -87,7 +88,7 @@ public class Main {
 
     }
     private static void setMotor(int motor, int value) {
-        arena.robot.setWheelVelocity(motor,value/255d);
+        arena.robot.setWheelVelocity(motor,value/1500d);
     }
     static final int op_init = 1;
     static final int op_take_picture = 2;
