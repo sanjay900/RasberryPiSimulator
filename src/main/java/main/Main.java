@@ -60,9 +60,9 @@ public class Main {
                                 case op_get_pixel:
                                     row = dIn.readInt();
                                     col = dIn.readInt();
-                                    red = (data[col*bim.getWidth()+row] >> 16) & 0x000000FF;
-                                    green = (data[col*bim.getWidth()+row] >>8 ) & 0x000000FF;
-                                    blue = (data[col*bim.getWidth()+row]) & 0x000000FF;
+                                    red = (data[col*arena.camera.visionImage.getWidth()+row] >> 16) & 0x000000FF;
+                                    green = (data[col*arena.camera.visionImage.getWidth()+row] >>8 ) & 0x000000FF;
+                                    blue = (data[col*arena.camera.visionImage.getWidth()+row]) & 0x000000FF;
                                     switch (dIn.readByte()) {
                                         case 0:
                                             dOut.write(red-127);
