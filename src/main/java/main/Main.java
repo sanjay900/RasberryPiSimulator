@@ -5,6 +5,7 @@ import maze.Maze;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ public class Main {
         startSocket();
     }
     static Thread last = null;
+    static int[] data;
     //Should split reading and writing into seperate threads
     private static void startSocket() throws IOException{
         ServerSocket serversocket = new ServerSocket(8080); // Create and connect the socket
@@ -34,8 +36,8 @@ public class Main {
                 try {
                     DataInputStream dIn = new DataInputStream(socket.getInputStream());
                     DataOutputStream dOut = new DataOutputStream(socket.getOutputStream());
-                    BufferedImage bim  =  new BufferedImage(arena.camera.getImageWidth(), arena.camera.getImageHeight(),
-                            BufferedImage.TYPE_INT_RGB);
+                    int row,col,red,green,blue;
+                    data = ((DataBufferInt) arena.camera.visionImage.getRaster().getDataBuffer()).getData();
                     while (!socket.isClosed() && !Thread.interrupted()) {
                         if (dIn.available() > 0) {
                             switch (dIn.readByte()) {
@@ -44,7 +46,7 @@ public class Main {
                                     break;
                                 case op_read_analog:
                                     byte sensor = dIn.readByte();
-                                    dOut.writeInt((int)arena.b.getMeasurement(sensor));
+                                    dOut.writeInt((int)(arena.b.getMeasurement(sensor)*255));
                                     dOut.flush();
                                     break;
                                 case op_set_motor:
@@ -53,23 +55,26 @@ public class Main {
                                 //For this, there is no point in simulating leds.
                                 case op_write_digital:
                                     break;
+                                case op_take_picture:
+                                    break;
                                 case op_get_pixel:
-                                    arena.camera.copyVisionImage(bim);
-                                    int row = dIn.readInt();
-                                    int col = dIn.readInt();
-                                    Color c = new Color(bim.getRGB(row,col));
+                                    row = dIn.readInt();
+                                    col = dIn.readInt();
+                                    red = (data[col*bim.getWidth()+row] >> 16) & 0x000000FF;
+                                    green = (data[col*bim.getWidth()+row] >>8 ) & 0x000000FF;
+                                    blue = (data[col*bim.getWidth()+row]) & 0x000000FF;
                                     switch (dIn.readByte()) {
                                         case 0:
-                                            dOut.writeByte(c.getRed());
+                                            dOut.write(red-127);
                                             break;
                                         case 1:
-                                            dOut.writeByte(c.getGreen());
+                                            dOut.write(green-127);
                                             break;
                                         case 2:
-                                            dOut.writeByte(c.getBlue());
+                                            dOut.write(blue-127);
                                             break;
                                         case 3:
-                                            dOut.writeByte((c.getRed()+c.getGreen()+c.getBlue())/3);
+                                            dOut.write(((red+green+blue)/3)-127);
                                             break;
                                     }
                                     dOut.flush();
@@ -88,7 +93,7 @@ public class Main {
 
     }
     private static void setMotor(int motor, int value) {
-        arena.robot.setWheelVelocity(motor,value/1500d);
+        arena.robot.setWheelVelocity(motor,-value/255d);
     }
     static final int op_init = 1;
     static final int op_take_picture = 2;

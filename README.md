@@ -9,5 +9,15 @@ Currently Developed commands:
 - get_pixel
 
 This is currently only for linux users
-To start up a pi emulator, run ./boot.sh
 To start the simulator itself, run src/main/java/main/Main.java
+
+
+To start up a pi emulator, run ./boot.sh
+However, you can also just directly compile against the libe101 library
+and you wont have any issues.
+
+NOTE:
+WHEN IMPORTING, use 
+extern "C" unsigned char get_pixel(int row,int col,int color);
+for get_pixel.
+

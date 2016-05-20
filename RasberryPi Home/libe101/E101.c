@@ -7,7 +7,9 @@ This should really be based on asingle socket.
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <unistd.h>
 #include <time.h>
 #define NUM(a) (sizeof(a) / sizeof(*a))
 //Swap this to opcodes, and use binary not strings
@@ -33,7 +35,8 @@ char op_connect_to_server = 16;
 char op_send_to_server = 17;
 char op_recieve_from_server = 18;
 void sendData(char* data, int size);
-char* itoc(int n);
+void itoc(int n, char* bytes);
+void ctoi(char bytes[4], int *n);
 void error(char *msg)
 {
     perror(msg);
@@ -65,7 +68,7 @@ int init() {
     if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
         perror("connect failed. Error");
-        return;
+        return 0;
     }
 
     puts("Connected\n");
@@ -78,27 +81,44 @@ int write_digital(int chan, char level) {
 }
 
 int set_motor(int motor, int speed) {
-    char data[] = {op_set_motor,motor,itoc(speed)[0],itoc(speed)[1],itoc(speed)[2],itoc(speed)[3]};
+	char* speed_b = malloc(4);
+	itoc(speed,speed_b);
+    char data[] = {op_set_motor,motor,speed_b[0],speed_b[1],speed_b[2],speed_b[3]};
     sendData(data,6);
 }
 int read_analog(int chan) {
     char data[] = {op_read_analog,chan};
     sendData(data,2);
-    char* received_int = malloc(4);
-    char return_status = read(sock, received_int, 4);
-    printf("TES:L %d%d%d%d\n",received_int[0],received_int[1],received_int[2],received_int[3]);
-    if (return_status > 0)
-       return ctoi(received_int);
-    return 0;
+    char* datas = malloc(1);
+    char* recieved_int = malloc(4);
+    int recieved = 0;
+    int rc = 0;
+    while (rc < 4) {
+    	char return_status = read(sock, datas, 1);
+    	if (return_status < 0) {
+	    return 0;
+    	}
+	recieved_int[rc] = datas[0];
+	rc++;
+	//printf("%d\n",rc);
+    }
+    ctoi(recieved_int,&recieved);
+    return recieved;
 }
-char get_pixel(int row, int col, int color) {
-	char data[] = {op_get_pixel,itoc(row)[0],itoc(row)[1],itoc(row)[2],itoc(row)[3],itoc(col)[0],itoc(col)[1],itoc(col)[2],itoc(col)[3],color};
+unsigned char get_pixel(int row, int col, int color) {
+	char* row_b = malloc(4);
+	char* col_b = malloc(4);
+	itoc(row,row_b);
+	itoc(col,col_b);
+	char data[] = {op_get_pixel,row_b[0],row_b[1],row_b[2],row_b[3],col_b[0],col_b[1],col_b[2],col_b[3],color};
     sendData(data,10);
     char* b = malloc(1);
     read(sock, b, 1);
-    return b[0];
+    return b[0]+127;
 }
 void take_picture() {
+char data[] = {op_take_picture};
+    sendData(data,1);
 }
 void sendData(char* data, int size)
 {
@@ -106,15 +126,22 @@ void sendData(char* data, int size)
     n = write(sock,data,size);
     if (n < 0) error("ERROR writing to socket");
 }
-char* itoc(int n) {
-	char bytes[4];
-	bytes[0] = (n >> 24) & 0xFF;
-	bytes[1] = (n >> 16) & 0xFF;
-	bytes[2] = (n >> 8) & 0xFF;
-	bytes[3] = n & 0xFF;
-	return bytes;
+void itoc(int n, char* bytes) {
+	*bytes = (n >> 24) & 0xFF;
+	*(bytes+1) = (n >> 16) & 0xFF;
+	*(bytes+2) = (n >> 8) & 0xFF;
+	*(bytes+3) = n & 0xFF;
 }
-int ctoi(int bytes[4]) {
-    int i = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
-	return i;
+void ctoi(char bytes[4], int *n) {
+    (*n) = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | (bytes[3]);
+}
+
+int connect_to_server( char server_addr[15],int port) {
+
+}
+int send_to_server(char message[24]) {
+
+}
+int receive_from_server(char message[24]){
+
 }

@@ -36,23 +36,20 @@ public class MyArena extends Demo {
     Robot robot;
     CameraSensor camera;
     RangeSensorBelt b;
+    Robot gate;
     public class Robot extends Agent {
         public Robot (Vector3d position, String name) {
             super(position,name);
             this.radius = 0.05f;
             this.height = 0.1f;
-            // Add sensors
-            double agentHeight = getHeight();
-            float cameraBodyRadius = 0.3f;
+            float cameraBodyRadius = 0.01f;
             camera = new CameraSensor(cameraBodyRadius, 320, 240);
-
             camera.setUpdatePerSecond(60);
-            Vector3d pos = new Vector3d(0.08, 0.1+(agentHeight / 2)
-                    + (cameraBodyRadius * 3) / 4+0.2, 0);
+            Vector3d pos = new Vector3d(0.03, 0.1, 0);
             addSensorDevice(camera, pos, 0);
-            b = new RangeSensorBelt(0.1f,0f,10f,4,RangeSensorBelt.TYPE_IR,0);
+            b = new RangeSensorBelt(0.05f,0.04f,4f,4,RangeSensorBelt.TYPE_SONAR,0);
 
-            //addSensorDevice(b,new Vector3d(0,0,0),Math.PI);
+            addSensorDevice(b,new Vector3d(0,0,0),Math.PI);
             setKinematicModel(new DifferentialKinematic(getRadius()));
         }
 
@@ -88,19 +85,11 @@ public class MyArena extends Demo {
     public MyArena() {
         worldSize = 2;
         this.floorColor = new Color3f(Color.BLACK);
+
         this.wallColor = new Color3f(Color.WHITE);
         light1IsOn = true;
-        light2IsOn = false;
-        Wall w = new Wall(new Vector3d(size, 0, 0), size*2, 0.5f,width, this);
-        w.rotate90(1);
-        add(w);
-        w = new Wall(new Vector3d(-size, 0, 0), size*2, 0.5f,width, this);
-        w.rotate90(1);
-        add(w);
-        w = new Wall(new Vector3d(0, 0, size), size*2, 0.5f,width, this);
-        add(w);
-        w = new Wall(new Vector3d(0, 0, -size), size*2, 0.5f,width, this);
-        add(w);
+        light2IsOn = true;
+        Wall w;
 
 
         w = new Wall(new Vector3d(-size, 0, -size), 3.1f, 0.01f,pathWidth, this);
@@ -329,8 +318,9 @@ public class MyArena extends Demo {
         //MORGAN
         w = new Wall(new Vector3d(0.25-0.15, 0, -0.24+0.5), 0.1f, 0.01f,pathWidth, this);
         w.rotateY(1.5);
+        w.setColor(new Color3f(Color.BLACK));
         w.collides = false;
-        add(w);
+        //add(w);
 
         w = new Wall(new Vector3d(-0.25-0.15, 0, -0.5), 1.5f, 0.01f,pathWidth, this);
         w.collides = false;
@@ -366,22 +356,26 @@ public class MyArena extends Demo {
         w.collides = false;
         add(w);
 
-        w = new Wall(new Vector3d(0.5-0.15, 0, -0.2+0.5), 0.61f, 0.01f,pathWidth, this);
+        w = new Wall(new Vector3d(0.5-0.15, 0, -0.2+0.6), 0.51f, 0.01f,pathWidth, this);
         w.rotateY(-1.57);
+        //w.setColor(new Color3f(Color.BLACK));
         w.collides = false;
         add(w);
 
 
         w = new Wall(new Vector3d(0.5-0.15, 0, -0.15+0.5), 0.5f, 0.01f,pathWidth, this);
+        w.setColor(new Color3f(Color.BLACK));
         w.collides = false;
-        add(w);
+        //add(w);
 
         w = new Wall(new Vector3d(0.5-0.15, 0, -0.25+0.5), 0.5f, 0.01f,pathWidth, this);
         w.collides = false;
-        add(w);
+        w.setColor(new Color3f(Color.BLACK));
+        //add(w);
 
         w = new Wall(new Vector3d(0.25-0.15, 0, 1.8+0.5), 0.5f, 0.01f,pathWidth, this);
         w.collides = false;
+        w.setColor(new Color3f(Color.BLACK));
         add(w);
 
         w = new Wall(new Vector3d(0.52-0.15, 0, 1.7+0.5), 0.4f, 0.01f,pathWidth, this);
@@ -433,10 +427,23 @@ public class MyArena extends Demo {
         add(w);
 
         //SANJAY
-
+        wallColor = new Color3f(Color.BLACK);
+        backgroundColor = new Color3f(Color.BLACK);
+        w = new Wall(new Vector3d(size, 0, 0), size*2, 0.5f,width, this);
+        w.rotate90(1);
+        add(w);
+        w = new Wall(new Vector3d(-size, 0, 0), size*2, 0.5f,width, this);
+        w.rotate90(1);
+        add(w);
+        w = new Wall(new Vector3d(0, 0, size), size*2, 0.5f,width, this);
+        add(w);
+        w = new Wall(new Vector3d(0, 0, -size), size*2, 0.5f,width, this);
+        add(w);
         robot = new Robot(new Vector3d(-0.5, 0, -0.5), "robot 1");
+        robot.rotateY(0.5);
         add(robot);
         hasAxis = false;
+
 
     }
 }

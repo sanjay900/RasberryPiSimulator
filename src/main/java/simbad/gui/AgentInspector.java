@@ -64,7 +64,7 @@ public class AgentInspector extends JInternalFrame implements Runnable {
         sensorPanels = new ArrayList();
         actuatorPanels = new ArrayList();
         initialize();
-        setFramesPerSecond(2.0f);
+        setFramesPerSecond(60.0f);
         if (useThread){
             thread = new Thread(this);
             thread.start();

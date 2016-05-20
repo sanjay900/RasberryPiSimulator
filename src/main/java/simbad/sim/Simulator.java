@@ -47,49 +47,49 @@ import javax.swing.JInternalFrame;
  * The Simulator class also provides a Background Mode with limited rendering. 
  * This mode is mainly useful for batch simulation ( ie genetic algorithms).
  * See Also Simbatch class. 
- * 
+ *
  * Cooperates with: World, PhysicalEngine
 *
  */
 public class Simulator {
-    
-    /** Used for mutual exclusion. all methods accessing agents shoud use this lock. */ 
+
+    /** Used for mutual exclusion. all methods accessing agents shoud use this lock. */
     private Lock lock;
     /** Keeps track of application's main component  -- can be null*/
     private JComponent applicationComponent;
     World world; // link to associated world
     FrameMeter fps; // for fps measurement
     private Timer timer;
-    
+
     /** The list of all objects  in the world. (static objects and agents).  */
     private ArrayList objects;
 
     /** The list of all agents.  */
-      private ArrayList agents;
+      private ArrayList<SimpleAgent> agents;
 
     /** number of frames per virtual seconds -  20 is a good value */
     private int framesPerSecond;
-    
+
     private float virtualTimeFactor;
     /** Thread for the background mode */
     private SimulatorThread simulatorThread;
 
-    
+
     /** Control the usage of physical law in the simulation */
     private boolean usePhysics;
-    
+
     /** Handles all algorithms and resources related to agent interactions. */
     PhysicalEngine physicalEngine;
-    
+
    /** Count simulation steps. */
     private long counter;
-    
-    
+
+
     ///////////////////////////////////////////////////////
     // CREATION / DESTRUCTION
- 
+
     /** Constructs the simulator object
-     * 
+     *
      * @param applicationComponent - A reference to the main Application container.
      * @param world - The 3d world object.
      * @param ed - the Environment description.
@@ -109,11 +109,11 @@ public class Simulator {
         setFramesPerSecond(60);
         setVirtualTimeFactor(1);
         fps = new FrameMeter();
-        agents = new ArrayList();
+        agents = new ArrayList<>();
         objects = new ArrayList();
         usePhysics =ed.usePhysics;
         physicalEngine = new PhysicalEngine();
-        
+
         addMobileAndStaticObjects(ed);
         createAgentsUI();
     }
@@ -125,7 +125,7 @@ public class Simulator {
         try {Thread.sleep(500); } catch(Exception ignored){}
         for (int i = 0; i < agents.size(); i++)
             ((SimpleAgent) agents.get(i)).dispose();
-   
+
     }
     /** Add all agents and objects. Only called once.*/
     private void addMobileAndStaticObjects(EnvironmentDescription ed) {
@@ -142,8 +142,8 @@ public class Simulator {
                 // pre compute necessary stuff.
                 so.createLocalToVworld();
                 so.createTransformedBounds();
-                
-                
+
+
             }else if (o instanceof  SimpleAgent){
                 // The object is of type agent, we add it to the
                 // simulator and call create.
@@ -153,7 +153,7 @@ public class Simulator {
                 agent.create();
                 agent.reset();
                 agents.add(agent);
-                world.addObjectToPickableSceneBranch(agent);           
+                world.addObjectToPickableSceneBranch(agent);
             }
         }
     }
@@ -175,18 +175,18 @@ public class Simulator {
             }
         }
     }
-            
+
     /////////////////////////////////////////////////////////////////////////////////////
     // SIMULATION LOOP
-    
+
     /**
      * The main simulator method. It is called  cyclicaly or step by step. (see startSimulation).
      */
     public  synchronized void simulateOneStep() {
         // start critical section. only one thread.
-        lock(); 
+        lock();
         int nagents = agents.size();
-        
+
         // Print memory info (rarely)
         if (counter % 100000==0){
             Runtime.getRuntime().gc();
@@ -195,26 +195,26 @@ public class Simulator {
                     "k  free: "+Runtime.getRuntime().freeMemory()/1024+"k");
         }
         counter++;
-        
+
         // seconds are elapsed in virtual agent time.
         double dt = 1.0 / framesPerSecond;
-      
-        
+
+
         // update sensors and actuators
         for (int i = 0; i < nagents; i++) {
             SimpleAgent a = ((SimpleAgent) agents.get(i));
             a.updateSensors(dt, world.getPickableSceneBranch());
             a.updateActuators(dt);
-           
-           
+
+
         }
- 
+
         // perform behavior
         for (int i = 0; i < nagents; i++) {
             SimpleAgent a = ((SimpleAgent) agents.get(i));
             a.performPreBehavior();
             a.performBehavior();
-           
+
         }
         // Compute forces
         for (int i = 0; i <  nagents; i++) {
@@ -225,25 +225,25 @@ public class Simulator {
                 physicalEngine.computeForces(dt,a);
             a.integratesVelocities(dt);
             a.integratesPositionChange(dt);
-            
+
         }
-       
+
         // Check physical interactions.
         if (usePhysics){
             physicalEngine.checkAgentAgentPairs(dt,agents,true,false);
             physicalEngine.checkAgentObjectPairs(agents,objects,true,false);
-            
+
             // integrate position again  cause velocity may have changed due to impact.
             for (int i = 0; i < nagents; i++) {
                 SimpleAgent a = ((SimpleAgent) agents.get(i));
                 a.integratesPositionChange(dt);
             }
-            
+
         }
         // Check collision
         physicalEngine.checkAgentAgentPairs(dt,agents,false,true);
         physicalEngine.checkAgentObjectPairs(agents,objects,false,true);
-    
+
         // Update position and all counters
         for (int i = 0; i < nagents; i++) {
             SimpleAgent a = ((SimpleAgent) agents.get(i));
@@ -255,7 +255,7 @@ public class Simulator {
         unlock();
     }
 
-    
+
     /** initialize the behavior of all agents. */
     public synchronized void initBehaviors() {
         lock();// start of critical section
@@ -264,7 +264,7 @@ public class Simulator {
             SimpleAgent agent = ((SimpleAgent) agents.get(i));
                 agent.initPreBehavior();
                 agent.initBehavior();
-            
+
         }
         unlock();// end of critical section
     }
@@ -331,7 +331,7 @@ public class Simulator {
         return framesPerSecond ;
     }
     /** Set the time factor. Used to increase or decrease the simulation rate.
-     *  
+     *
      * @param fact : typical value 1.0 (default) , 2.0 or 0.5
      */
     public void setVirtualTimeFactor(float fact){
@@ -341,18 +341,18 @@ public class Simulator {
     public float getVirtualTimeFactor(){
         return virtualTimeFactor ;
     }
-    
+
     public  void setApplicationComponent(JComponent component){ applicationComponent= component;}
     /** This class runs the simulator in a background process.
      * It is only used for simulator  background mode. 
      */
-    
+
     /** Obtain simulator critical resources.*/
     public void lock(){lock.lock();}
     /** Release simulator critical resources.*/
     public void unlock(){lock.unlock();}
-    
-    
+
+
     /////////////////////////////////////////////////////////////////////////////////////
     // BACKGROUND MODE THREAD 
     /** Starts special background mode */
@@ -406,15 +406,11 @@ public class Simulator {
             // loop until flag change
             while (!stopped) {
                 simulateOneStep();
-                count++; 
+                count++;
                 if ((count % rendererRate) == 0) {
                     world.renderOnce();
                     // inspector update seems to cause memory leak (priority ?)
-                    for (int i = 0; i < agents.size(); i++) {
-                        Object o =  agents.get(i);
-                        if (o instanceof Agent)
-                            ((Agent) o).getAgentInspector().update();
-                    }
+                    agents.stream().filter(o -> o instanceof Agent).forEach(o -> ((Agent) o).getAgentInspector().update());
                 }
             }
             System.out.println("[SIM] Stopping Background mode");

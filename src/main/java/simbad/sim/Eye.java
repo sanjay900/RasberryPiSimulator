@@ -31,6 +31,8 @@ import java.awt.GraphicsConfigTemplate;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
+import java.time.Duration;
+import java.time.Instant;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.GraphicsConfigTemplate3D;
@@ -65,9 +67,9 @@ public class Eye extends SensorDevice {
     private View view;
     private OffScreenCanvas3D offscreenCanvas3D;
     
-    protected int tempRGBABuffer[];
+    int tempRGBABuffer[];
     // the rendered offscreen image
-    BufferedImage visionImage;
+    public BufferedImage visionImage;
     
     protected int imageWidth ;
     protected int imageHeight;
@@ -115,7 +117,7 @@ public class Eye extends SensorDevice {
         }
 
         synchronized void render() {
-            
+
            try{
                 renderOffScreenBuffer();
            }catch(RestrictedAccessException e)   
@@ -150,7 +152,7 @@ public class Eye extends SensorDevice {
     void create3D(float radius) {
         super.create3D(true);
         // body
-        /*if (radius > 0) {
+        if (radius > 0) {
             Color3f color = new Color3f(0.8f, 0.8f, 0.0f);
             Appearance appear = new Appearance();
             appear
@@ -160,7 +162,7 @@ public class Eye extends SensorDevice {
             node.setCollidable(false);
             node.setPickable(false);
             addChild(node);
-        }*/
+        }
     }
     void createViewPlatform(){
         // viewplatform
@@ -193,8 +195,8 @@ public class Eye extends SensorDevice {
         // attach  offscreen canvas to the view
         offscreenCanvas3D = new OffScreenCanvas3D(config);
         offscreenCanvas3D.getScreen3D().setSize(imageWidth, imageHeight);
-        offscreenCanvas3D.getScreen3D().setPhysicalScreenHeight(0.5);
-        offscreenCanvas3D.getScreen3D().setPhysicalScreenWidth(0.5);
+        offscreenCanvas3D.getScreen3D().setPhysicalScreenHeight(2);
+        offscreenCanvas3D.getScreen3D().setPhysicalScreenWidth(2);
         view.addCanvas3D(offscreenCanvas3D);
         addChild(viewPlatform);
         // turn canvas in front of X axis  
@@ -222,6 +224,7 @@ public class Eye extends SensorDevice {
      * @param bim - buffered image to be filled.
      */
     final public synchronized void copyVisionImage(BufferedImage bim){
+
         bim.setData(visionImage.getData());
     }
     /**
@@ -238,12 +241,11 @@ public class Eye extends SensorDevice {
                 int b = (pix) & 0xff;
                 array[i] = (float) (r + g + b) / (3.0f * 255.0f);
             }
-       
     }
        
     /** Called by simulator to render a new vision image */
    protected  void update(){
-        this.offscreenCanvas3D.render();
+       this.offscreenCanvas3D.render();
     }
     
     public JPanel createInspectorPanel(){
