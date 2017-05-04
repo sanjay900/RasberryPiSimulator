@@ -1,6 +1,7 @@
 #!/bin/bash
-if which apt-get >dev/null; then
-    echo "Make sure you have installed qemu, qemu-user-static, and binfmt-support before using this app.\nPress any key to continue..."
+if ! which apt-get >/dev/null; then
+    echo "Make sure you have installed qemu, qemu-user-static, and binfmt-support before using this app."
+    echo "Press any key to continue..."
     read
 fi
 sudo apt-get install qemu qemu-user-static binfmt-support
