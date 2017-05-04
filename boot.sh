@@ -3,8 +3,9 @@ if ! which apt-get >/dev/null; then
     echo "Make sure you have installed qemu, qemu-user-static, and binfmt-support before using this app."
     echo "Press any key to continue..."
     read
+else
+    sudo apt-get install qemu qemu-user-static binfmt-support
 fi
-sudo apt-get install qemu qemu-user-static binfmt-support
 if [ ! -d "rpi_image" ]; then
     mkdir rpi_image
     cd rpi_image
